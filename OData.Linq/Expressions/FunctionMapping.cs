@@ -25,7 +25,7 @@ namespace OData.Linq.Expressions
 
         private FunctionMapping(string functionName)
         {
-            this.FunctionName = functionName;
+            FunctionName = functionName;
         }
 
         private static readonly Func<FunctionDefinition, Func<string, ODataExpression, IEnumerable<object>, ODataExpression>> FunctionWithTarget =

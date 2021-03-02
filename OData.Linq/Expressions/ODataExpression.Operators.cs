@@ -7,23 +7,23 @@ namespace OData.Linq.Expressions
     public partial class ODataExpression
 #pragma warning restore 660,661
     {
-        public static implicit operator ODataExpression(bool value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(byte value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(sbyte value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(short value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(ushort value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(int value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(uint value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(long value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(ulong value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(float value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(double value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(decimal value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(DateTime value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(DateTimeOffset value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(TimeSpan value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(Guid value) { return ODataExpression.FromValue(value); }
-        public static implicit operator ODataExpression(string value) { return ODataExpression.FromValue(value); }
+        public static implicit operator ODataExpression(bool value) { return FromValue(value); }
+        public static implicit operator ODataExpression(byte value) { return FromValue(value); }
+        public static implicit operator ODataExpression(sbyte value) { return FromValue(value); }
+        public static implicit operator ODataExpression(short value) { return FromValue(value); }
+        public static implicit operator ODataExpression(ushort value) { return FromValue(value); }
+        public static implicit operator ODataExpression(int value) { return FromValue(value); }
+        public static implicit operator ODataExpression(uint value) { return FromValue(value); }
+        public static implicit operator ODataExpression(long value) { return FromValue(value); }
+        public static implicit operator ODataExpression(ulong value) { return FromValue(value); }
+        public static implicit operator ODataExpression(float value) { return FromValue(value); }
+        public static implicit operator ODataExpression(double value) { return FromValue(value); }
+        public static implicit operator ODataExpression(decimal value) { return FromValue(value); }
+        public static implicit operator ODataExpression(DateTime value) { return FromValue(value); }
+        public static implicit operator ODataExpression(DateTimeOffset value) { return FromValue(value); }
+        public static implicit operator ODataExpression(TimeSpan value) { return FromValue(value); }
+        public static implicit operator ODataExpression(Guid value) { return FromValue(value); }
+        public static implicit operator ODataExpression(string value) { return FromValue(value); }
 
         public static ODataExpression operator !(ODataExpression expr)
         {

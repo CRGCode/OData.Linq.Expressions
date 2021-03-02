@@ -55,7 +55,7 @@ namespace OData.Linq.Expressions
             var type = value?.GetType();
 
             if (value != null && context.Session.TypeCache.IsEnumType(type))
-                value = new ODataEnumValue(value.ToString(), context.Session.Metadata.GetQualifiedTypeName(type.Name));
+                value = new ODataEnumValue(value.ToString(), string.Join(".", type.Namespace, type.Name));
             if (value is ODataExpression expression)
                 return expression.AsString(context.Session);
 

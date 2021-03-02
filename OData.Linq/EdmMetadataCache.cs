@@ -70,9 +70,5 @@ namespace OData.Linq
 
         public string MetadataDocument { get; }
 
-        public IODataAdapter GetODataAdapter(ISession session)
-        {
-            return null; //session.Settings.AdapterFactory.CreateAdapterLoader(MetadataDocument, typeCache)(session);
-        }
     }
 }

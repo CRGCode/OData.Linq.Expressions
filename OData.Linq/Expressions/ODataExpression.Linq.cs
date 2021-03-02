@@ -71,31 +71,29 @@ namespace OData.Linq.Expressions
             {
                 return new ODataExpression(EvaluateStaticMember(memberExpression));
             }
-            else
+
+            // NOTE: Can't support ITypeCache here as we might be dealing with dynamic types/expressions
+            var memberName = memberExpression.Member.GetMappedName();
+
+            memberNames = memberNames == null ? memberName : string.Join(".", memberName, memberNames);
+            switch (memberExpression.Expression.NodeType)
             {
-                // NOTE: Can't support ITypeCache here as we might be dealing with dynamic types/expressions
-                var memberName = memberExpression.Member.GetMappedName();
+                case ExpressionType.Parameter:
+                    return FromReference(memberNames);
+                case ExpressionType.Constant:
+                    return ParseConstantExpression(memberExpression.Expression, memberNames);
+                case ExpressionType.MemberAccess:
+                    if (FunctionMapping.ContainsFunction(memberName, 0))
+                    {
+                        return FromFunction(memberName, ParseMemberExpression(memberExpression.Expression), new List<object>());
+                    }
+                    else
+                    {
+                        return ParseMemberExpression(memberExpression.Expression as MemberExpression, memberNames);
+                    }
 
-                memberNames = memberNames == null ? memberName : string.Join(".", memberName, memberNames);
-                switch (memberExpression.Expression.NodeType)
-                {
-                    case ExpressionType.Parameter:
-                        return FromReference(memberNames);
-                    case ExpressionType.Constant:
-                        return ParseConstantExpression(memberExpression.Expression, memberNames);
-                    case ExpressionType.MemberAccess:
-                        if (FunctionMapping.ContainsFunction(memberName, 0))
-                        {
-                            return FromFunction(memberName, ParseMemberExpression(memberExpression.Expression), new List<object>());
-                        }
-                        else
-                        {
-                            return ParseMemberExpression(memberExpression.Expression as MemberExpression, memberNames);
-                        }
-
-                    default:
-                        throw Utils.NotSupportedExpression(expression);
-                }
+                default:
+                    throw Utils.NotSupportedExpression(expression);
             }
         }
 
@@ -127,7 +125,7 @@ namespace OData.Linq.Expressions
                         new ExpressionFunction(callExpression.Method.Name, arguments));
 
                 case ExpressionType.Call:
-                    if (string.Equals(callExpression.Method.Name, nameof(object.ToString), StringComparison.Ordinal))
+                    if (string.Equals(callExpression.Method.Name, nameof(ToString), StringComparison.Ordinal))
                         return ParseCallExpression(callExpression.Object);
                     else
                         return new ODataExpression(
@@ -186,19 +184,15 @@ namespace OData.Linq.Expressions
             {
                 return ParseConstantExpression(constExpression.Value as Expression, memberNames);
             }
-            else
+
+            if (constExpression.Type.IsValue() || constExpression.Type == typeof(string))
             {
-                if (constExpression.Type.IsValue() || constExpression.Type == typeof(string))
-                {
-                    return new ODataExpression(constExpression.Value);
-                }
-                else
-                {
-                    return new ODataExpression(EvaluateConstValue(
-                        constExpression.Type, constExpression.Value,
-                        memberNames == null ? new List<string>() : memberNames.Split('.').ToList()));
-                }
+                return new ODataExpression(constExpression.Value);
             }
+
+            return new ODataExpression(EvaluateConstValue(
+                constExpression.Type, constExpression.Value,
+                memberNames == null ? new List<string>() : memberNames.Split('.').ToList()));
         }
 
         private static ODataExpression ParseUnaryExpression(Expression expression)
@@ -229,7 +223,8 @@ namespace OData.Linq.Expressions
             {
                 return ParseBinaryExpression(leftExpression, ParseLinqExpression(Expression.Convert(binaryExpression.Right, enumType)), expression);
             }
-            else if (IsConvertFromCustomEnum(binaryExpression.Right, out enumType))
+
+            if (IsConvertFromCustomEnum(binaryExpression.Right, out enumType))
             {
                 return ParseBinaryExpression(ParseLinqExpression(Expression.Convert(binaryExpression.Left, enumType)), rightExpression, expression);
             }

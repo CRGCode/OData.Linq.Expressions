@@ -68,7 +68,8 @@ namespace OData.Linq.Expressions
                     .SelectMany(x => ExtractColumnNames(callExpression.Arguments[1], typeCache)
                         .Select(y => string.Join("/", x, y)));
             }
-            else if (callExpression.Method.Name == "OrderBy" && callExpression.Arguments.Count == 2)
+
+            if (callExpression.Method.Name == "OrderBy" && callExpression.Arguments.Count == 2)
             {
                 if (callExpression.Arguments[0] is MethodCallExpression && ((callExpression.Arguments[0] as MethodCallExpression).Method.Name == "Select"))
                     throw Utils.NotSupportedExpression(callExpression);
@@ -77,7 +78,7 @@ namespace OData.Linq.Expressions
                     .SelectMany(x => ExtractColumnNames(callExpression.Arguments[1], typeCache)
                         .OrderBy(y => string.Join("/", x, y)));
             }
-            else if (callExpression.Method.Name == "OrderByDescending" && callExpression.Arguments.Count == 2)
+            if (callExpression.Method.Name == "OrderByDescending" && callExpression.Arguments.Count == 2)
             {
                 if (callExpression.Arguments[0] is MethodCallExpression && ((callExpression.Arguments[0] as MethodCallExpression).Method.Name == "Select"))
                     throw Utils.NotSupportedExpression(callExpression);
@@ -86,10 +87,7 @@ namespace OData.Linq.Expressions
                     .SelectMany(x => ExtractColumnNames(callExpression.Arguments[1], typeCache)
                         .OrderByDescending(y => string.Join("/", x, y)));
             }
-            else
-            {
-                throw Utils.NotSupportedExpression(callExpression);
-            }
+            throw Utils.NotSupportedExpression(callExpression);
         }
 
         private static IEnumerable<string> ExtractColumnNames(NewExpression newExpression, ITypeCache typeCache)
