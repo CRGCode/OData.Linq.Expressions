@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq.Expressions;
 
+#pragma warning disable 0660,0661
 namespace OData.Linq.Expressions
 {
-#pragma warning disable 0660,0661
     public partial class ODataExpression
-#pragma warning restore 660,661
     {
         public static implicit operator ODataExpression(bool value) { return FromValue(value); }
         public static implicit operator ODataExpression(byte value) { return FromValue(value); }

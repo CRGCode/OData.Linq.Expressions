@@ -6,7 +6,7 @@ namespace OData.Linq.Tests
     {
         public static readonly string TransportPropertyKey = @"Test Value";
 
-        public int TransportID { get; set; }
+        public int TransportId { get; set; }
     }
 
     public class Ship : Transport

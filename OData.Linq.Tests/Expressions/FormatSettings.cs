@@ -52,7 +52,7 @@ namespace OData.Linq.Tests.Expressions
                 result = Uri.EscapeDataString(result);
             return result;
         }
-        
+
         public string GetContainedInFormat(string item, string text, bool escapeString = false)
         {
             var result = $"substringof({item},'{text}')";

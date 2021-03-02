@@ -11,8 +11,8 @@ namespace OData.Linq.Expressions
 
         public class FunctionCall
         {
-            public string FunctionName { get; private set; }
-            public int ArgumentCount { get; private set; }
+            public string FunctionName { get; }
+            public int ArgumentCount { get; }
 
             public FunctionCall(string functionName, int argumentCount)
             {

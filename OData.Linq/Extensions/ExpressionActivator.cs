@@ -95,12 +95,12 @@ namespace OData.Linq.Extensions
 
             var lambdaExpression = Expression.Lambda(typeof(ActivatorDelegate), newExpression, parameter);
 
-            return (ActivatorDelegate) lambdaExpression.Compile();
+            return (ActivatorDelegate)lambdaExpression.Compile();
         }
 
         public static ActivatorDelegate<T> Cast<T>(this ActivatorDelegate activator)
         {
-            return args => (T) activator.Invoke(args);
+            return args => (T)activator.Invoke(args);
         }
 
         private static Func<ParameterExpression, UnaryExpression> CreateArgumentExpression(ParameterInfo parameterInfo, int index)

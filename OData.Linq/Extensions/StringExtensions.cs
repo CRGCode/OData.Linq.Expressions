@@ -6,7 +6,7 @@ namespace OData.Linq.Extensions
     {
         public static bool IsAllUpperCase(this string str)
         {
-            return !str.Cast<char>().Any(char.IsLower);
+            return !str.Any(char.IsLower);
         }
 
         public static string NullIfWhitespace(this string str)

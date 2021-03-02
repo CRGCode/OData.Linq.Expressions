@@ -7,7 +7,7 @@ namespace OData.Linq.Tests.Expressions
 {
     public class ValueConversionTests
     {
-        private ITypeCache _typeCache => new TypeCache(new TypeConverter(), null);
+        private ITypeCache TypeCache => new TypeCache(new TypeConverter(), null);
 
         [Theory]
         [InlineData(1, typeof(int), typeof(byte))]
@@ -43,12 +43,12 @@ namespace OData.Linq.Tests.Expressions
         public void TryConvert(object value, Type sourceType, Type targetType)
         {
             var sourceValue = ChangeType(value, sourceType);
-            var result = _typeCache.TryConvert(sourceValue, targetType, out var targetValue);
+            var result = TypeCache.TryConvert(sourceValue, targetType, out var targetValue);
             Assert.True(result);
             Assert.Equal(ChangeType(sourceValue, targetType), ChangeType(targetValue, targetType));
 
             sourceValue = ChangeType(value, targetType);
-            result = _typeCache.TryConvert(sourceValue, sourceType, out targetValue);
+            result = TypeCache.TryConvert(sourceValue, sourceType, out targetValue);
             Assert.True(result);
             Assert.Equal(ChangeType(sourceValue, sourceType), ChangeType(targetValue, sourceType));
         }
@@ -57,7 +57,7 @@ namespace OData.Linq.Tests.Expressions
         public void TryConvertGeographyPoint()
         {
             var source = GeographyPoint.Create(10, 10);
-            var result = _typeCache.TryConvert(source, typeof(GeographyPoint), out _);
+            var result = TypeCache.TryConvert(source, typeof(GeographyPoint), out _);
             Assert.True(result);
         }
 

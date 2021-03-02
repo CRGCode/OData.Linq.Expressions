@@ -22,7 +22,7 @@ namespace OData.Linq
         /// Default OData protocol version
         /// </summary>
         Default = V4,
-        
+
         /// <summary>
         /// Any OData protocol version
         /// </summary>

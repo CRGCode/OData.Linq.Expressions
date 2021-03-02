@@ -20,7 +20,7 @@ namespace OData.Linq.Expressions
             public AdapterVersion AdapterVersion { get; set; }
         }
 
-        public string FunctionName { get; private set; }
+        public string FunctionName { get; }
         public Func<string, ODataExpression, IEnumerable<object>, ODataExpression> FunctionMapper { get; private set; }
 
         private FunctionMapping(string functionName)
@@ -97,8 +97,8 @@ namespace OData.Linq.Expressions
         public static bool TryGetFunctionMapping(string functionName, int argumentCount, AdapterVersion adapterVersion, out FunctionMapping functionMapping)
         {
             functionMapping = null;
-            var function = DefinedFunctions.SingleOrDefault(x => 
-                x.FunctionCall.Equals(new ExpressionFunction.FunctionCall(functionName, argumentCount)) && 
+            var function = DefinedFunctions.SingleOrDefault(x =>
+                x.FunctionCall.Equals(new ExpressionFunction.FunctionCall(functionName, argumentCount)) &&
                 (x.AdapterVersion & adapterVersion) == adapterVersion);
 
             if (function != null)
@@ -108,7 +108,7 @@ namespace OData.Linq.Expressions
             return function != null;
         }
 
-        private static FunctionDefinition CreateFunctionDefinition(string functionName, int argumentCount, string mappedFunctionName, 
+        private static FunctionDefinition CreateFunctionDefinition(string functionName, int argumentCount, string mappedFunctionName,
             Func<FunctionDefinition, Func<string, ODataExpression, IEnumerable<object>, ODataExpression>> mapper, AdapterVersion adapterVersion = AdapterVersion.Any)
         {
             var functionCall = new ExpressionFunction.FunctionCall(functionName, argumentCount);

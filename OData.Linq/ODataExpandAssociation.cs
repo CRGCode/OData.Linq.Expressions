@@ -13,20 +13,20 @@ namespace OData.Linq
                 throw new ArgumentException($"Parameter {nameof(name)} should not be null or empty.", nameof(name));
             Name = name;
         }
-        
+
         public string Name { get; }
-        
+
         public List<ODataExpandAssociation> ExpandAssociations { get; } = new List<ODataExpandAssociation>();
-        
-        public List<ODataOrderByColumn> OrderByColumns { get; }  = new List<ODataOrderByColumn>();
-        
+
+        public List<ODataOrderByColumn> OrderByColumns { get; } = new List<ODataOrderByColumn>();
+
         public ODataExpression FilterExpression { get; set; }
 
         public static ODataExpandAssociation From(string association)
         {
             if (string.IsNullOrEmpty(association))
                 throw new ArgumentException($"Parameter {nameof(association)} should not be null or empty.", nameof(association));
-            
+
             var items = association.Split('/');
             var expandAssociation = new ODataExpandAssociation(items.First());
             var currentAssociation = expandAssociation;

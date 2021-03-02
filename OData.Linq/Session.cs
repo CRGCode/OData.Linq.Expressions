@@ -4,16 +4,16 @@ namespace OData.Linq
 {
     public class Session : ISession
     {
-        public Session()
+        public Session(bool enumPrefixFree = false)
         {
-            Settings = new ODataClientSettings();
-            TypeCache = new TypeCache(new TypeConverter(), Settings.NameMatchResolver);
+            EnumPrefixFree = enumPrefixFree;
+            TypeCache = new TypeCache(new TypeConverter(), new BestMatchResolver());
         }
 
-        public ODataClientSettings Settings { get; }
+        public bool EnumPrefixFree { get; set; }
 
         public ITypeCache TypeCache { get; }
-        
+
         public int ArgumentCounter { get; set; }
     }
 }

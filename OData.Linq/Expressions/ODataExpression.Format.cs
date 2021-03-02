@@ -4,19 +4,20 @@ using System.Linq;
 using System.Linq.Expressions;
 using Microsoft.OData;
 
+#pragma warning disable 0660,0661
 namespace OData.Linq.Expressions
 {
     public partial class ODataExpression
     {
         internal string Format(ExpressionContext context)
         {
-            if (context.IsQueryOption && _operator != ExpressionType.Default &&
-                _operator != ExpressionType.And && _operator != ExpressionType.Equal)
+            if (context.IsQueryOption && @operator != ExpressionType.Default &&
+                @operator != ExpressionType.And && @operator != ExpressionType.Equal)
             {
                 throw new InvalidOperationException("Invalid custom query option.");
             }
 
-            if (_operator == ExpressionType.Default && !IsValueConversion)
+            if (@operator == ExpressionType.Default && !IsValueConversion)
             {
                 return Reference != null ?
                     FormatReference(context) : Function != null ?
@@ -33,25 +34,25 @@ namespace OData.Linq.Expressions
                     {
                         expr = new ODataExpression(expr.Value);
                     }
-                    else if (context.Session.TypeCache.TryConvert(expr.Value, _conversionType, out object result))
+                    else if (context.Session.TypeCache.TryConvert(expr.Value, conversionType, out object result))
                     {
                         expr = new ODataExpression(result);
                     }
                 }
                 return FormatExpression(expr, context);
             }
-            if (_operator == ExpressionType.Not || _operator == ExpressionType.Negate)
+            if (@operator == ExpressionType.Not || @operator == ExpressionType.Negate)
             {
-                var left = FormatExpression(_left, context);
+                var left = FormatExpression(this.left, context);
                 var op = FormatOperator(context);
-                if (NeedsGrouping(_left))
+                if (NeedsGrouping(this.left))
                     return $"{op} ({left})";
                 return $"{op} {left}";
             }
             else
             {
-                var left = FormatExpression(_left, context);
-                var right = FormatExpression(_right, context);
+                var left = FormatExpression(this.left, context);
+                var right = FormatExpression(this.right, context);
                 var op = FormatOperator(context);
 
                 if (context.IsQueryOption)
@@ -59,9 +60,9 @@ namespace OData.Linq.Expressions
                     return $"{left}{op}{right}";
                 }
 
-                if (NeedsGrouping(_left))
+                if (NeedsGrouping(this.left))
                     left = $"({left})";
-                if (NeedsGrouping(_right))
+                if (NeedsGrouping(this.right))
                     right = $"({right})";
 
                 return $"{left} {op} {right}";
@@ -76,14 +77,14 @@ namespace OData.Linq.Expressions
         private string FormatReference(ExpressionContext context)
         {
             var elementNames = new List<string>(Reference.Split('.', '/'));
-            var segmentNames = BuildReferencePath(new List<string>(),elementNames, context);
+            var segmentNames = BuildReferencePath(new List<string>(), elementNames, context);
             return FormatScope(string.Join("/", segmentNames), context);
         }
 
         private string FormatFunction(ExpressionContext context)
         {
-            var adapterVersion = AdapterVersion.Default; 
-            if (FunctionToOperatorMapping.TryGetOperatorMapping(_functionCaller, Function, adapterVersion, out var operatorMapping))
+            var adapterVersion = AdapterVersion.Default;
+            if (FunctionToOperatorMapping.TryGetOperatorMapping(functionCaller, Function, adapterVersion, out var operatorMapping))
             {
                 return FormatMappedOperator(context, operatorMapping);
             }
@@ -146,16 +147,16 @@ namespace OData.Linq.Expressions
 
             throw new NotSupportedException($"The function {Function.FunctionName} is not supported or called with wrong number of arguments");
         }
-        
+
         private string FormatMappedOperator(ExpressionContext context, FunctionToOperatorMapping mapping)
         {
-            return mapping.Format(context, _functionCaller, Function.Arguments);
+            return mapping.Format(context, functionCaller, Function.Arguments);
         }
-        
+
         private string FormatMappedFunction(ExpressionContext context, FunctionMapping mapping)
         {
             var mappedFunction = mapping.FunctionMapper(
-                Function.FunctionName, _functionCaller, Function.Arguments).Function;
+                Function.FunctionName, functionCaller, Function.Arguments).Function;
             var formattedArguments = string.Join(",",
                 (IEnumerable<object>)mappedFunction.Arguments.Select(x => FormatExpression(x, context)));
 
@@ -165,10 +166,9 @@ namespace OData.Linq.Expressions
         private string FormatAnyAllFunction(ExpressionContext context)
         {
             var navigationPath = FormatCallerReference();
-            //var entityCollection = context.Session.Metadata.NavigateToCollection(context.EntityCollection, navigationPath);
 
             string formattedArguments;
-            if(!Function.Arguments.Any() && string.Equals(Function.FunctionName, ODataLiteral.Any, StringComparison.OrdinalIgnoreCase))
+            if (!Function.Arguments.Any() && string.Equals(Function.FunctionName, ODataLiteral.Any, StringComparison.OrdinalIgnoreCase))
             {
                 formattedArguments = string.Empty;
             }
@@ -179,7 +179,6 @@ namespace OData.Linq.Expressions
                 formattedArguments = $"{targetQualifier}:{FormatExpression(Function.Arguments.First(), expressionContext)}";
             }
 
-            //var formattedNavigationPath = context.Session.Adapter.GetCommandFormatter().FormatNavigationPath(context.EntityCollection, navigationPath);
             return FormatScope($"{navigationPath}/{Function.FunctionName.ToLower()}({formattedArguments})", context);
         }
 
@@ -206,16 +205,16 @@ namespace OData.Linq.Expressions
         {
             var propertyName =
                 FormatExpression(Function.Arguments.First(), new ExpressionContext(context.Session)).Trim('\'');
-            return _functionCaller.Reference == context.DynamicPropertiesContainerName
+            return functionCaller.Reference == context.DynamicPropertiesContainerName
                 ? propertyName
                 : $"{FormatCallerReference()}.{propertyName}";
         }
 
         private string FormatToStringFunction(ExpressionContext context)
         {
-            return _functionCaller.Reference != null 
-                ? FormatCallerReference() 
-                : _functionCaller.FormatValue(context);
+            return functionCaller.Reference != null
+                ? FormatCallerReference()
+                : functionCaller.FormatValue(context);
         }
 
         private string FormatValue(ExpressionContext context)
@@ -233,7 +232,7 @@ namespace OData.Linq.Expressions
                 var odataVersion = ODataVersion.V4;
                 string ConvertValue(object x) => ODataUriUtils.ConvertToUriLiteral(x, odataVersion, null);
 
-                if (value is ODataEnumValue enumValue && session.Settings.EnumPrefixFree)
+                if (value is ODataEnumValue enumValue && session.EnumPrefixFree)
                     value = enumValue.Value;
                 else if (value is DateTime dateTime)
                     value = new DateTimeOffset(dateTime);
@@ -261,7 +260,7 @@ namespace OData.Linq.Expressions
 
         private string FormatOperator(ExpressionContext context)
         {
-            switch (_operator)
+            switch (@operator)
             {
                 case ExpressionType.And:
                     return context.IsQueryOption ? "&" : "and";
@@ -321,7 +320,7 @@ namespace OData.Linq.Expressions
         {
             if (FunctionMapping.TryGetFunctionMapping(objectName, 0, AdapterVersion.Default, out var mapping))
             {
-                var mappedFunction = mapping.FunctionMapper(objectName, _functionCaller, null).Function;
+                var mappedFunction = mapping.FunctionMapper(objectName, functionCaller, null).Function;
                 return $"{mappedFunction.FunctionName}({FormatCallerReference()})";
             }
 
@@ -330,7 +329,7 @@ namespace OData.Linq.Expressions
 
         private string FormatCallerReference()
         {
-            return _functionCaller.Reference.Replace(".", "/");
+            return functionCaller.Reference.Replace(".", "/");
         }
 
         private int GetPrecedence(ExpressionType op)
@@ -366,15 +365,15 @@ namespace OData.Linq.Expressions
 
         private bool NeedsGrouping(ODataExpression expr)
         {
-            if (_operator == ExpressionType.Default)
+            if (@operator == ExpressionType.Default)
                 return false;
             if (ReferenceEquals(expr, null))
                 return false;
-            if (expr._operator == ExpressionType.Default)
+            if (expr.@operator == ExpressionType.Default)
                 return false;
 
-            int outerPrecedence = GetPrecedence(_operator);
-            int innerPrecedence = GetPrecedence(expr._operator);
+            int outerPrecedence = GetPrecedence(@operator);
+            int innerPrecedence = GetPrecedence(expr.@operator);
             return outerPrecedence < innerPrecedence;
         }
 

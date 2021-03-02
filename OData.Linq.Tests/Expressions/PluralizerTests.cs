@@ -6,7 +6,7 @@ namespace OData.Linq.Tests.Expressions
 {
     public class PluralizerTests
     {
-        private readonly SimplePluralizer _pluralizer = new SimplePluralizer();
+        private readonly SimplePluralizer pluralizer = new SimplePluralizer();
 
         [Theory]
         [InlineData("Person", "Persons")]
@@ -17,7 +17,7 @@ namespace OData.Linq.Tests.Expressions
         [InlineData("Codex", "Codices")]
         public void PluralizeWord(string word, string expectedResult)
         {
-            Assert.Equal(expectedResult, _pluralizer.Pluralize(word));
+            Assert.Equal(expectedResult, pluralizer.Pluralize(word));
         }
 
         [Theory]
@@ -30,35 +30,35 @@ namespace OData.Linq.Tests.Expressions
         [InlineData("Codices", "Codex")]
         public void SingularizeWord(string word, string expectedResult)
         {
-            Assert.Equal(expectedResult, _pluralizer.Singularize(word));
+            Assert.Equal(expectedResult, pluralizer.Singularize(word));
         }
 
         [Theory]
         [InlineData("Språk", "Språk")]
         public void PluralizeWordWithNonEnglishCharacters(string word, string expectedResult)
         {
-            Assert.Equal(expectedResult, _pluralizer.Pluralize(word));
+            Assert.Equal(expectedResult, pluralizer.Pluralize(word));
         }
 
         [Theory]
         [InlineData("Gårds", "Gårds")]
         public void SingularizeWordWithNonEnglishCharacters(string word, string expectedResult)
         {
-            Assert.Equal(expectedResult, _pluralizer.Singularize(word));
+            Assert.Equal(expectedResult, pluralizer.Singularize(word));
         }
 
         [Theory]
         [InlineData("Catalog_Контрагенты", "Catalog_Контрагенты")]
         public void PluralizeWordWithNonLatinCharacters(string word, string expectedResult)
         {
-            Assert.Equal(expectedResult, _pluralizer.Pluralize(word));
+            Assert.Equal(expectedResult, pluralizer.Pluralize(word));
         }
 
         [Theory]
         [InlineData("Catalog_Контрагенты", "Catalog_Контрагенты")]
         public void SingularizeWordWithNonLatinCharacters(string word, string expectedResult)
         {
-            Assert.Equal(expectedResult, _pluralizer.Singularize(word));
+            Assert.Equal(expectedResult, pluralizer.Singularize(word));
         }
 
         [Theory]

@@ -12,7 +12,7 @@
             Session = session;
         }
 
-        public ExpressionContext(ISession session,string scopeQualifier, string dynamicPropertiesContainerName)
+        public ExpressionContext(ISession session, string scopeQualifier, string dynamicPropertiesContainerName)
         {
             Session = session;
             ScopeQualifier = scopeQualifier;

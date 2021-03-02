@@ -37,17 +37,17 @@ namespace OData.Linq
         /// <summary>
         /// The number of levels to expand.
         /// </summary>
-        public int Levels { get; private set; }
+        public int Levels { get; }
 
         /// <summary>
         /// The expansion mode (by value or by reference).
         /// </summary>
-        public ODataExpandMode ExpandMode { get; private set; }
+        public ODataExpandMode ExpandMode { get; }
 
         private ODataExpandOptions(int levels = 1, ODataExpandMode expandMode = ODataExpandMode.ByValue)
         {
-            this.Levels = levels;
-            this.ExpandMode = expandMode;
+            Levels = levels;
+            ExpandMode = expandMode;
         }
 
         private ODataExpandOptions(ODataExpandLevels levels, ODataExpandMode expandMode = ODataExpandMode.ByValue)

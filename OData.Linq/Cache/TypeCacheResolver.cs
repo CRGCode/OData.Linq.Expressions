@@ -11,7 +11,7 @@ namespace OData.Linq.Cache
     /// </summary>
     public class TypeCacheResolver
     {
-        private readonly INameMatchResolver _nameMatchResolver;
+        private readonly INameMatchResolver nameMatchResolver;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TypeCacheResolver"/> class.
@@ -22,7 +22,7 @@ namespace OData.Linq.Cache
         /// <param name="dynamicContainerName">Dynamic container name.</param>
         public TypeCacheResolver(Type type, INameMatchResolver nameMatchResolver, bool dynamicType = false, string dynamicContainerName = "DynamicProperties")
         {
-            _nameMatchResolver = nameMatchResolver;
+            this.nameMatchResolver = nameMatchResolver;
 
             Type = type;
             DerivedTypes = type.DerivedTypes().ToList();
@@ -133,7 +133,7 @@ namespace OData.Linq.Cache
         /// <returns></returns>
         public PropertyInfo GetMappedProperty(string propertyName)
         {
-            return (from t in MappedPropertiesWithNames where _nameMatchResolver.IsMatch(t.Item2, propertyName) select t.Item1).FirstOrDefault();
+            return (from t in MappedPropertiesWithNames where nameMatchResolver.IsMatch(t.Item2, propertyName) select t.Item1).FirstOrDefault();
         }
 
         public string GetMappedName(PropertyInfo propertyInfo)
@@ -143,7 +143,7 @@ namespace OData.Linq.Cache
 
         public string GetMappedName(string propertyName)
         {
-            return (from t in MappedPropertiesWithNames where _nameMatchResolver.IsMatch(t.Item1.Name, propertyName) select t.Item2).FirstOrDefault();
+            return (from t in MappedPropertiesWithNames where nameMatchResolver.IsMatch(t.Item1.Name, propertyName) select t.Item2).FirstOrDefault();
         }
 
         public PropertyInfo GetAnyProperty(string propertyName)

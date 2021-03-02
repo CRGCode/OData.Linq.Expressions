@@ -21,11 +21,11 @@ namespace OData.Linq
         /// <returns></returns>
         string Singularize(string word);
     }
-    
+
     public class Pluralizer : IPluralizer
     {
-        private readonly Func<string, string> _pluralize;
-        private readonly Func<string, string> _singularize;
+        private readonly Func<string, string> pluralize;
+        private readonly Func<string, string> singularize;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Pluralizer"/> class.
@@ -34,8 +34,8 @@ namespace OData.Linq
         /// <param name="singularize">The Singularize function delegate.</param>
         public Pluralizer(Func<string, string> pluralize, Func<string, string> singularize)
         {
-            _pluralize = pluralize;
-            _singularize = singularize;
+            this.pluralize = pluralize;
+            this.singularize = singularize;
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace OData.Linq
         /// <returns></returns>
         public string Pluralize(string word)
         {
-            return _pluralize(word);
+            return pluralize(word);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace OData.Linq
         /// <returns></returns>
         public string Singularize(string word)
         {
-            return _singularize(word);
+            return singularize(word);
         }
     }
 
@@ -112,7 +112,7 @@ namespace OData.Linq
             return string.Compare(ToSingularInternal(plural), singular, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
-        static readonly string[] _specialWordsStringTable =
+        static readonly string[] SpecialWordsStringTable =
         {
             "agendum", "agenda", "",
             "albino", "albinos", "",
@@ -205,7 +205,7 @@ namespace OData.Linq
             "vortex", "vortices", "vortexes",
         };
 
-        static readonly string[] _suffixRulesStringTable =
+        static readonly string[] SuffixRulesStringTable =
         {
             "ch", "ches",
             "sh", "shes",
@@ -262,18 +262,18 @@ namespace OData.Linq
 
         class SuffixRule
         {
-            readonly string _singularSuffix;
-            readonly string _pluralSuffix;
+            readonly string singularSuffix;
+            readonly string pluralSuffix;
             public SuffixRule(string singular, string plural)
             {
-                _singularSuffix = singular;
-                _pluralSuffix = plural;
+                singularSuffix = singular;
+                pluralSuffix = plural;
             }
             public bool TryToPlural(string word, out string plural)
             {
-                if (word.EndsWith(_singularSuffix, StringComparison.OrdinalIgnoreCase))
+                if (word.EndsWith(singularSuffix, StringComparison.OrdinalIgnoreCase))
                 {
-                    plural = word.Substring(0, word.Length - _singularSuffix.Length) + _pluralSuffix;
+                    plural = word.Substring(0, word.Length - singularSuffix.Length) + pluralSuffix;
                     return true;
                 }
                 else
@@ -284,9 +284,9 @@ namespace OData.Linq
             }
             public bool TryToSingular(string word, out string singular)
             {
-                if (word.EndsWith(_pluralSuffix, StringComparison.OrdinalIgnoreCase))
+                if (word.EndsWith(pluralSuffix, StringComparison.OrdinalIgnoreCase))
                 {
-                    singular = word.Substring(0, word.Length - _pluralSuffix.Length) + _singularSuffix;
+                    singular = word.Substring(0, word.Length - pluralSuffix.Length) + singularSuffix;
                     return true;
                 }
                 else
@@ -301,11 +301,11 @@ namespace OData.Linq
         {
             _specialSingulars = new Dictionary<string, Word>(StringComparer.OrdinalIgnoreCase);
             _specialPlurals = new Dictionary<string, Word>(StringComparer.OrdinalIgnoreCase);
-            for (var i = 0; i < _specialWordsStringTable.Length; i += 3)
+            for (var i = 0; i < SpecialWordsStringTable.Length; i += 3)
             {
-                var s = _specialWordsStringTable[i];
-                var p = _specialWordsStringTable[i + 1];
-                var p2 = _specialWordsStringTable[i + 2];
+                var s = SpecialWordsStringTable[i];
+                var p = SpecialWordsStringTable[i + 1];
+                var p2 = SpecialWordsStringTable[i + 2];
                 if (string.IsNullOrEmpty(p))
                 {
                     p = s;
@@ -324,10 +324,10 @@ namespace OData.Linq
         private static void PopulateSuffixRules()
         {
             _suffixRules = new List<SuffixRule>();
-            for (var i = 0; i < _suffixRulesStringTable.Length; i += 2)
+            for (var i = 0; i < SuffixRulesStringTable.Length; i += 2)
             {
-                var singular = _suffixRulesStringTable[i];
-                var plural = _suffixRulesStringTable[i + 1];
+                var singular = SuffixRulesStringTable[i];
+                var plural = SuffixRulesStringTable[i + 1];
                 _suffixRules.Add(new SuffixRule(singular, plural));
             }
         }

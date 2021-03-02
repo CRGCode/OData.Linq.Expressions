@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.OData;
-using Microsoft.OData.Edm;
 
 namespace OData.Linq.Expressions
 {
@@ -50,7 +49,7 @@ namespace OData.Linq.Expressions
             return $"{functionArguments[0].Format(context)} in {listAsString}";
         }
 
-        private  string ConvertValue(ExpressionContext context, object value, bool escapeDataString)
+        private string ConvertValue(ExpressionContext context, object value, bool escapeDataString)
         {
             var type = value?.GetType();
 
@@ -62,7 +61,7 @@ namespace OData.Linq.Expressions
             var odataVersion = ODataVersion.V4;// (ODataVersion)Enum.Parse(typeof(ODataVersion), context.Session.Adapter.GetODataVersionString(), false);
             string ConvertValue(object x) => ODataUriUtils.ConvertToUriLiteral(x, odataVersion, null);// context.Session.Adapter.Model as IEdmModel);
 
-            if (value is ODataEnumValue && context.Session.Settings.EnumPrefixFree)
+            if (value is ODataEnumValue && context.Session.EnumPrefixFree)
                 value = ((ODataEnumValue)value).Value;
             else if (value is DateTime)
                 value = new DateTimeOffset((DateTime)value);
@@ -99,7 +98,7 @@ namespace OData.Linq.Expressions
                 var genericArgumentTypes = valueType.GenericTypeArguments;
                 if (!genericArgumentTypes.Any())
                 {
-                    genericArgumentTypes = new[] {typeof(object)};
+                    genericArgumentTypes = new[] { typeof(object) };
                     valueType = valueType.MakeGenericType(genericArgumentTypes);
                 }
                 var expectedGenericType = expectedType.MakeGenericType(genericArgumentTypes);

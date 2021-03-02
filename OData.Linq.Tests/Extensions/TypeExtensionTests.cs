@@ -39,26 +39,26 @@ namespace OData.Linq.Tests.Extensions
         [Fact]
         public void GetNamedProperty_BaseType()
         {
-            Assert.NotNull(typeof(Transport).GetNamedProperty("TransportID"));
+            Assert.NotNull(typeof(Transport).GetNamedProperty("TransportId"));
         }
 
         [Fact]
         public void GetNamedProperty_DerivedType()
         {
-            Assert.NotNull(typeof(Ship).GetNamedProperty("TransportID"));
+            Assert.NotNull(typeof(Ship).GetNamedProperty("TransportId"));
             Assert.NotNull(typeof(Ship).GetNamedProperty("ShipName"));
         }
 
         [Fact]
         public void GetDeclaredProperty_BaseType()
         {
-            Assert.NotNull(typeof(Transport).GetDeclaredProperty("TransportID"));
+            Assert.NotNull(typeof(Transport).GetDeclaredProperty("TransportId"));
         }
 
         [Fact]
         public void GetDeclaredProperty_DerivedType()
         {
-            Assert.Null(typeof(Ship).GetDeclaredProperty("TransportID"));
+            Assert.Null(typeof(Ship).GetDeclaredProperty("TransportId"));
             Assert.NotNull(typeof(Ship).GetDeclaredProperty("ShipName"));
         }
     }

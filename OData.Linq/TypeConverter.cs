@@ -7,16 +7,16 @@ namespace OData.Linq
     /// <copydoc cref="ITypeConverter" />
     public class TypeConverter : ITypeConverter
     {
-        private readonly Dictionary<Type, Func<IDictionary<string, object>, object>> _dictionaryConverters;
-        private readonly Dictionary<Type, Func<object, object>> _objectConverters;
+        private readonly Dictionary<Type, Func<IDictionary<string, object>, object>> dictionaryConverters;
+        private readonly Dictionary<Type, Func<object, object>> objectConverters;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TypeConverter"/> class.
         /// </summary>
         public TypeConverter()
         {
-            _dictionaryConverters = new Dictionary<Type, Func<IDictionary<string, object>, object>>();
-            _objectConverters = new Dictionary<Type, Func<object, object>>();
+            dictionaryConverters = new Dictionary<Type, Func<IDictionary<string, object>, object>>();
+            objectConverters = new Dictionary<Type, Func<object, object>>();
         }
 
         /// <copydoc cref="ITypeConverter.RegisterTypeConverter{T}(Func{IDictionary{string, object}, object})" />
@@ -34,39 +34,39 @@ namespace OData.Linq
         /// <copydoc cref="ITypeConverter.RegisterTypeConverter(Type, Func{IDictionary{string, object}, object})" />
         public void RegisterTypeConverter(Type type, Func<IDictionary<string, object>, object> converter)
         {
-            lock (_dictionaryConverters)
+            lock (dictionaryConverters)
             {
-                if (_dictionaryConverters.ContainsKey(type))
+                if (dictionaryConverters.ContainsKey(type))
                 {
-                    _dictionaryConverters.Remove(type);
+                    dictionaryConverters.Remove(type);
                 }
-                _dictionaryConverters.Add(type, converter);
+                dictionaryConverters.Add(type, converter);
             }
         }
 
         /// <copydoc cref="ITypeConverter.RegisterTypeConverter(Type, Func{object, object})" />
         public void RegisterTypeConverter(Type type, Func<object, object> converter)
         {
-            lock (_objectConverters)
+            lock (objectConverters)
             {
-                if (_objectConverters.ContainsKey(type))
+                if (objectConverters.ContainsKey(type))
                 {
-                    _objectConverters.Remove(type);
+                    objectConverters.Remove(type);
                 }
-                _objectConverters.Add(type, converter);
+                objectConverters.Add(type, converter);
             }
         }
 
         /// <copydoc cref="ITypeConverter.HasDictionaryConverter{T}" />
         public bool HasDictionaryConverter<T>()
         {
-            return HasDictionaryConverter(typeof (T));
+            return HasDictionaryConverter(typeof(T));
         }
 
         /// <copydoc cref="ITypeConverter.HasDictionaryConverter(Type)" />
         public bool HasDictionaryConverter(Type type)
         {
-            return _dictionaryConverters.ContainsKey(type);
+            return dictionaryConverters.ContainsKey(type);
         }
 
         /// <copydoc cref="ITypeConverter.HasObjectConverter{T}" />
@@ -78,7 +78,7 @@ namespace OData.Linq
         /// <copydoc cref="ITypeConverter.HasObjectConverter(Type)" />
         public bool HasObjectConverter(Type type)
         {
-            return _objectConverters.ContainsKey(type);
+            return objectConverters.ContainsKey(type);
         }
 
         /// <copydoc cref="ITypeConverter.Convert{T}(IDictionary{string, object})" />
@@ -96,7 +96,7 @@ namespace OData.Linq
         /// <copydoc cref="ITypeConverter.Convert(IDictionary{string, object}, Type)" />
         public object Convert(IDictionary<string, object> value, Type type)
         {
-            if (_dictionaryConverters.TryGetValue(type, out var converter))
+            if (dictionaryConverters.TryGetValue(type, out var converter))
             {
                 return converter(value);
             }
@@ -107,7 +107,7 @@ namespace OData.Linq
         /// <copydoc cref="ITypeConverter.Convert(IDictionary{string, object}, Type)" />
         public object Convert(object value, Type type)
         {
-            if (_objectConverters.TryGetValue(type, out var converter))
+            if (objectConverters.TryGetValue(type, out var converter))
             {
                 return converter(value);
             }
@@ -118,17 +118,17 @@ namespace OData.Linq
 
     public static class CustomConverters
     {
-        private static ConcurrentDictionary<string, ITypeConverter> _converters;
+        private static readonly ConcurrentDictionary<string, ITypeConverter> Converters;
 
         static CustomConverters()
         {
-            _converters = new ConcurrentDictionary<string, ITypeConverter>();
+            Converters = new ConcurrentDictionary<string, ITypeConverter>();
         }
 
         public static ITypeConverter Converter(string uri)
         {
             // TODO: Have a settings switch whether we use global dictionary or not?
-            return _converters.GetOrAdd(uri, new TypeConverter());
+            return Converters.GetOrAdd(uri, new TypeConverter());
         }
 
         public static ITypeConverter Global => Converter("global");
@@ -139,7 +139,7 @@ namespace OData.Linq
             Global.RegisterTypeConverter(type, converter);
 
             // Side-effect if we call the global is to register in all other converters
-            foreach (var kvp in _converters)
+            foreach (var kvp in Converters)
             {
                 if (kvp.Key != "global")
                 {
@@ -154,7 +154,7 @@ namespace OData.Linq
             Global.RegisterTypeConverter(type, converter);
 
             // Side-effect if we call the global is to register in all other converters
-            foreach (var kvp in _converters)
+            foreach (var kvp in Converters)
             {
                 if (kvp.Key != "global")
                 {

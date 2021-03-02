@@ -6,11 +6,11 @@ namespace OData.Linq.Tests.Expressions
 {
     public abstract class TestBase : IDisposable
     {
-        internal ISession _session;
+        internal ISession Session;
 
         protected TestBase()
         {
-            _session = new Session()
+            Session = new Session()
             {
 
             };

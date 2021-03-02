@@ -8,18 +8,13 @@ namespace OData.Linq.Extensions
 {
     public static class MemberInfoExtensions
     {
-        private static readonly ConcurrentDictionary<MemberInfo, MappingInfo> cache = new ConcurrentDictionary<MemberInfo, MappingInfo>();
+        private static readonly ConcurrentDictionary<MemberInfo, MappingInfo> Cache = new ConcurrentDictionary<MemberInfo, MappingInfo>();
 
         public static bool IsNotMapped(this MemberInfo memberInfo)
         {
             return MappingInfo(memberInfo).IsNotMapped;
         }
 
-        /// <summary>
-        /// Extract a column name from the member's attributes
-        /// </summary>
-        /// <param name="memberInfo"></param>
-        /// <returns></returns>
         public static string GetMappedName(this MemberInfo memberInfo)
         {
             return MappingInfo(memberInfo).MappedName;
@@ -27,7 +22,7 @@ namespace OData.Linq.Extensions
 
         private static MappingInfo MappingInfo(MemberInfo memberInfo)
         {
-            var info = cache.GetOrAdd(memberInfo, MappingInfoFactory);
+            var info = Cache.GetOrAdd(memberInfo, MappingInfoFactory);
 
             return info;
         }

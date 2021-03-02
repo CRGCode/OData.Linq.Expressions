@@ -9,7 +9,7 @@ namespace OData.Linq.Cache
     /// <copydoc cref="ITypeCache" />
     public class TypeCache : ITypeCache
     {
-        private readonly ConcurrentDictionary<Type, TypeCacheResolver> _cache;
+        private readonly ConcurrentDictionary<Type, TypeCacheResolver> cache;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TypeCache"/> class.
@@ -18,8 +18,8 @@ namespace OData.Linq.Cache
         /// <param name="nameMatchResolver"></param>
         public TypeCache(ITypeConverter converter, INameMatchResolver nameMatchResolver)
         {
-            _cache = new ConcurrentDictionary<Type, TypeCacheResolver>();
-            NameMatchResolver = nameMatchResolver ?? ODataNameMatchResolver.Strict;;
+            cache = new ConcurrentDictionary<Type, TypeCacheResolver>();
+            NameMatchResolver = nameMatchResolver ?? ODataNameMatchResolver.Strict; ;
             Converter = converter;
         }
 
@@ -229,12 +229,12 @@ namespace OData.Linq.Cache
             {
                 if (value == null)
                 {
-                    if (this.IsValue(targetType))
+                    if (IsValue(targetType))
                         result = Activator.CreateInstance(targetType);
                     else
                         result = null;
                 }
-                else if (this.IsTypeAssignableFrom(targetType, value.GetType()))
+                else if (IsTypeAssignableFrom(targetType, value.GetType()))
                 {
                     result = value;
                 }
@@ -242,7 +242,7 @@ namespace OData.Linq.Cache
                 {
                     result = value.ToString();
                 }
-                else if (this.IsEnumType(targetType) && value is string)
+                else if (IsEnumType(targetType) && value is string)
                 {
                     result = Enum.Parse(targetType, value.ToString(), true);
                 }
@@ -266,7 +266,7 @@ namespace OData.Linq.Cache
                 {
                     result = new DateTimeOffset(time);
                 }
-                else if (this.IsEnumType(targetType))
+                else if (IsEnumType(targetType))
                 {
                     result = Enum.ToObject(targetType, value);
                 }
@@ -293,7 +293,7 @@ namespace OData.Linq.Cache
 
         public object Convert(object value, Type targetType)
         {
-            if (value == null && !this.IsValue(targetType))
+            if (value == null && !IsValue(targetType))
                 return null;
             else if (TryConvert(value, targetType, out var result))
                 return result;
@@ -303,7 +303,7 @@ namespace OData.Linq.Cache
 
         private TypeCacheResolver Resolver(Type type)
         {
-            var resolver = _cache.GetOrAdd(type, x => InternalRegister(x));
+            var resolver = cache.GetOrAdd(type, x => InternalRegister(x));
 
             return resolver;
         }
@@ -312,7 +312,7 @@ namespace OData.Linq.Cache
         {
             var resolver = new TypeCacheResolver(type, NameMatchResolver, dynamicType, dynamicContainerName);
 
-            _cache[type] = resolver;
+            cache[type] = resolver;
 
             return resolver;
         }

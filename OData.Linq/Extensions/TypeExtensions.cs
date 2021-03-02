@@ -26,12 +26,6 @@ namespace OData.Linq.Extensions
             return properties.ToArray();
         }
 
-        /// <summary>
-        /// Get a directly named property
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="propertyName"></param>
-        /// <returns></returns>
         public static PropertyInfo GetNamedProperty(this Type type, string propertyName)
         {
             var currentType = type;
@@ -166,7 +160,7 @@ namespace OData.Linq.Extensions
         {
             return type.GetTypeInfo().BaseType;
         }
- 
+
         public static bool IsAnonymousType(this Type type)
         {
             // HACK: The only way to detect anonymous types right now.
