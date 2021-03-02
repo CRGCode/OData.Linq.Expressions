@@ -8,8 +8,6 @@ namespace OData.Linq.Expressions
 {
     public partial class ODataExpression
     {
-        internal static int ArgumentCounter = 0;
-
         internal string Format(ExpressionContext context)
         {
             if (context.IsQueryOption && _operator != ExpressionType.Default &&
@@ -184,7 +182,7 @@ namespace OData.Linq.Expressions
             }
             else
             {
-                var targetQualifier = $"x{(ArgumentCounter >= 0 ? (1 + (ArgumentCounter++) % 9).ToString() : string.Empty)}";
+                var targetQualifier = $"x{(context.Session.ArgumentCounter >= 0 ? (1 + context.Session.ArgumentCounter++ % 9).ToString() : string.Empty)}";
                 var expressionContext = new ExpressionContext(context.Session, targetQualifier, context.DynamicPropertiesContainerName);
                 formattedArguments = $"{targetQualifier}:{FormatExpression(this.Function.Arguments.First(), expressionContext)}";
             }
@@ -259,12 +257,12 @@ namespace OData.Linq.Expressions
             }
             else if (Value is Type type)
             {
-                var typeName = context.Session.Adapter.GetMetadata().GetQualifiedTypeName(type.Name);
+                var typeName = string.Join(".", type.Namespace, type.Name);
                 return ConvertValueToUriLiteral(typeName, false);
             }
             else
             {
-                return context.Session.Adapter.GetCommandFormatter().ConvertValueToUriLiteral(Value, false);
+                return ConvertValueToUriLiteral(Value, false);
             }
         }
 

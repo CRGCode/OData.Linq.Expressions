@@ -1,7 +1,4 @@
-﻿
-using OData.Linq.Fluent;
-
-namespace OData.Linq
+﻿namespace OData.Linq
 {
     public interface IODataAdapter
     {
@@ -10,8 +7,6 @@ namespace OData.Linq
         object Model { get; set; }
 
         IMetadata GetMetadata();
-
-        ICommandFormatter GetCommandFormatter();
 
         string GetODataVersionString();
     }

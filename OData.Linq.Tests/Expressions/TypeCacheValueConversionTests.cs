@@ -7,7 +7,7 @@ namespace OData.Linq.Tests.Expressions
 {
     public class TypeCacheValueConversionTests
     {
-        private ITypeCache _typeCache => TypeCaches.TypeCache("test", null);
+        private ITypeCache _typeCache => new TypeCache(new TypeConverter(), null);
 
         [Theory]
         [InlineData(1, typeof(int), typeof(byte))]

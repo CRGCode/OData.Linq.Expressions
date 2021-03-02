@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using OData.Linq.Extensions;
-using OData.Linq.Tests.Entities;
 using Xunit;
 
 namespace OData.Linq.Tests.Extensions

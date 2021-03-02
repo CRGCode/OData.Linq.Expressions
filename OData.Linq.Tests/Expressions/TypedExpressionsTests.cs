@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Newtonsoft.Json;
 using OData.Linq.Expressions;
-using OData.Linq.Tests.Entities;
 using Xunit;
 
 namespace OData.Linq.Tests.Expressions
@@ -643,5 +643,54 @@ namespace OData.Linq.Tests.Expressions
             var filter = filter1 && filter2;
             Assert.Equal("(ProductName eq 'Chai' or ProductID eq 1) and (ProductName eq 'Kaffe' or ProductID eq 2)", filter.AsString(_session));
         }
+
+        [Fact]
+        public void AnyNested()
+        {
+            Expression<Predicate<TestEntity>> filter = x => x.Collection.Any(c => c.Collection.Any(d => d.ProductID == 2));
+            var actual = ODataExpression.FromLinqExpression(filter).AsString(_session);
+            Assert.Equal("Collection/any(x1:x1/Collection/any(x2:x2/ProductID eq 2))",  actual);
+        }
+
+        [Fact]
+        public void AnyStringEqual()
+        {
+            Expression<Predicate<TestEntity>> filter = x => x.Collection.Any(c => c.Address.City == "Melbourne");
+            var actual = ODataExpression.FromLinqExpression(filter).AsString(_session);
+            Assert.Equal("Collection/any(x1:x1/Address/City eq 'Melbourne')", actual);
+        }
+
+        [Fact]
+        public void AnyEnumEqual()
+        {
+            Expression<Predicate<TestEntity>> filter = x => x.Collection.Any(c => c.Address.Type == AddressType.Corporate);
+            var actual = ODataExpression.FromLinqExpression(filter).AsString(_session);
+            Assert.Equal("Collection/any(x1:x1/Address/Type eq OData.Linq.Tests.AddressType'Corporate')", actual);
+        }
+
+        [Fact]
+        public void AllDecimalLessThan()
+        {
+            Expression<Predicate<TestEntity>> filter = x => x.Collection.All(c => c.Price < 10);
+            var actual = ODataExpression.FromLinqExpression(filter).AsString(_session);
+            Assert.Equal("Collection/all(x1:x1/Price lt 10)", actual);
+        }
+
+        [Fact]
+        public void AllEnumEqual()
+        {
+            Expression<Predicate<TestEntity>> filter = x => x.Collection.All(c => c.Address.Type == AddressType.Corporate);
+            var actual = ODataExpression.FromLinqExpression(filter).AsString(_session);
+            Assert.Equal("Collection/all(x1:x1/Address/Type eq OData.Linq.Tests.AddressType'Corporate')", actual);
+        }
+
+        [Fact]
+        public void AllMultipleExpression()
+        {
+            Expression<Predicate<TestEntity>> filter = x => x.Collection.All(c => c.Address.Type == AddressType.Corporate && c.Price > 10);
+            var actual = ODataExpression.FromLinqExpression(filter).AsString(_session);
+            Assert.Equal("Collection/all(x1:x1/Address/Type eq OData.Linq.Tests.AddressType'Corporate' and x1/Price gt 10)", actual);
+        }
+
     }
 }

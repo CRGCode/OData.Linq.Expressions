@@ -20,5 +20,7 @@ namespace OData.Linq
         /// Gets type information for this session.
         /// </summary>
         ITypeCache TypeCache { get; }
+
+        int ArgumentCounter { get; set; }
     }
 }

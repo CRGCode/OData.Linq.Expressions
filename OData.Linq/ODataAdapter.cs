@@ -1,5 +1,4 @@
 ﻿using Microsoft.OData.Edm;
-using OData.Linq.Fluent;
 
 namespace OData.Linq
 {
@@ -34,11 +33,6 @@ namespace OData.Linq
         {
             // TODO: Should use a MetadataFactory here 
             return _metadata ?? (_metadata = new MetadataCache(new Metadata(Model, _session.Settings.NameMatchResolver, _session.Settings.IgnoreUnmappedProperties, false)));//  _session.Settings.UnqualifiedNameCall)));
-        }
-
-        public override ICommandFormatter GetCommandFormatter()
-        {
-            return new CommandFormatter(_session);
         }
     }
 }

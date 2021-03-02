@@ -1,13 +1,12 @@
 ﻿using System.Linq;
 using OData.Linq.Cache;
-using OData.Linq.Tests.Entities;
 using Xunit;
 
 namespace OData.Linq.Tests.Extensions
 {
     public class TypeCacheTests
     {
-        private ITypeCache _typeCache => TypeCaches.TypeCache("test", null);
+        private ITypeCache _typeCache => new TypeCache(new TypeConverter(), null);
 
         [Fact]
         public void GetDerivedTypes_BaseType()
