@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>OData.Linq.Expressions</id>
+    <authors>Craig Gardiner</authors>
+    <version>0.0.0.0</version>
+    <owners>Craig Gardiner</owners>
+    <!-- <icon>C:\CRG\OData.Linq.Expressions\icons\OData.Linq.Expressions.png</icon> -->
+    <description>
+      OData.Linq.Expressions is lambda filter generator.
+    </description>
+    <summary>
+      OData.Linq.Expressions is lambda filter generator.
+    </summary>
+    <projectUrl>https://github.com/object/OData.Linq.Expressions</projectUrl>
+    <license type="expression">MIT</license>
+    <copyright></copyright>
+    <language>en-us</language>
+    <tags>odata lambda filter</tags>
+    <dependencies>
+      <!-- <group targetFramework="net461"> -->
+        <!-- <dependency id="Microsoft.OData.Core" version="[7.8.1,8)" /> -->
+      <!-- </group> -->
+      <group targetFramework="netstandard2.0">
+        <dependency id="Microsoft.OData.Core" version="[7.8.1,8)" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="icons\OData.Linq.Expressions.png" target="images\" />
+
+    <!-- NET45 -->
+    <!-- <file src="build\Release\OData.Linq.Expressions\net461\OData.Linq.Expressions.dll" target="lib\net461\OData.Linq.Expressions.dll" /> -->
+    <!-- <file src="build\Release\OData.Linq.Expressions\net461\OData.Linq.Expressions.pdb" target="lib\net461\OData.Linq.Expressions.pdb" /> -->
+    <!-- <file src="build\Release\OData.Linq.Expressions\net461\OData.Linq.Expressions.xml" target="lib\net461\OData.Linq.Expressions.xml" /> -->
+    
+
+    
+    <!-- NETSTANDARD2.0 -->
+    <file src="build\Release\OData.Linq\netstandard2.0\OData.Linq.dll" target="lib\netstandard2.0\OData.Linq.dll" />
+    <file src="build\Release\OData.Linq\netstandard2.0\OData.Linq.pdb" target="lib\netstandard2.0\OData.Linq.pdb" />
+    <!-- <file src="build\Release\OData.Linq\netstandard2.0\OData.Linq.xml" target="lib\netstandard2.0\OData.Linq.xml" /> -->
+
+  </files>
+</package>

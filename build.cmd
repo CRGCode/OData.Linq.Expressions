@@ -1,0 +1,1 @@
+dotnet build OData.Linq.Expressions.sln -c Release
